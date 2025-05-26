@@ -22,24 +22,25 @@ RESOURCE_IDS = {
     "train": ("train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd")}
 #url = "https://data.gov.il/dataset/bus_rishui_bitzua_2021/resource/86eceab6-44ac-4301-a6a7-9a4a92dae48b"
 
-# Initialize the WebDriver
-driver = webdriver.Chrome(options=options)
-
-driver.get("https://data.gov.il")  # Visit domain to allow setting cookies
-driver.add_cookie({
-    'name': 'ckan',
-    'value': '59f15554713ea5891cafe62654ebcca493feab1fgAJ9cQAoWAcAAABfZG9tYWlucQFOWAUAAABfcGF0aHECWAEAAAAvcQNYAwAAAF9pZHEEWCAAAABkZmRlYmQ5ZjU5NWU0ZmI1OWU1MjlmYTY0MjlhNzc1NXEFWAYAAABfZnJlc2hxBolYDgAAAF9jcmVhdGlvbl90aW1lcQdHQdoNJ5iN9nVYDgAAAF9hY2Nlc3NlZF90aW1lcQhHQdoNJ5iN9nl1Lg=='
-})
-driver.add_cookie({
-    'name': 'rbzid',
-    'value': 'thyG/xae0kueZ+/N8/fWY/AzoqC0Tz+zhOSjbRE+ED9nIEQurN/9rG6sgRm7mR1fNWPqCgjOy/rRi3Ffxw/hU/C/wj0xnMa78fwTXfUl6rM/O09z5EIOuTNhODTtiuy+sG0nB4/MlGBpDUtvTmwCjFL6bBDe8ZlxLtvNz2M/8N23ymMCVUTOzAztmOK4vRQXdJxCZLKHPtuscThWb2iFVjuqs67bWn0XH25uRgPapd9FTgC7ukkLC/fZN7zJoLrRcN6S6jNM+Wy17A5jRgxEmw=='
-})
-driver.add_cookie({
-    'name': 'rbzsessionid',
-    'value': 'b4b3803ad108702fa76f228a156dbcbe'
-})
-
 def scrape_data(resource_id):
+
+    # Initialize the WebDriver
+    driver = webdriver.Chrome(options=options)
+
+    driver.get("https://data.gov.il")  # Visit domain to allow setting cookies
+    driver.add_cookie({
+        'name': 'ckan',
+        'value': '59f15554713ea5891cafe62654ebcca493feab1fgAJ9cQAoWAcAAABfZG9tYWlucQFOWAUAAABfcGF0aHECWAEAAAAvcQNYAwAAAF9pZHEEWCAAAABkZmRlYmQ5ZjU5NWU0ZmI1OWU1MjlmYTY0MjlhNzc1NXEFWAYAAABfZnJlc2hxBolYDgAAAF9jcmVhdGlvbl90aW1lcQdHQdoNJ5iN9nVYDgAAAF9hY2Nlc3NlZF90aW1lcQhHQdoNJ5iN9nl1Lg=='
+    })
+    driver.add_cookie({
+        'name': 'rbzid',
+        'value': 'thyG/xae0kueZ+/N8/fWY/AzoqC0Tz+zhOSjbRE+ED9nIEQurN/9rG6sgRm7mR1fNWPqCgjOy/rRi3Ffxw/hU/C/wj0xnMa78fwTXfUl6rM/O09z5EIOuTNhODTtiuy+sG0nB4/MlGBpDUtvTmwCjFL6bBDe8ZlxLtvNz2M/8N23ymMCVUTOzAztmOK4vRQXdJxCZLKHPtuscThWb2iFVjuqs67bWn0XH25uRgPapd9FTgC7ukkLC/fZN7zJoLrRcN6S6jNM+Wy17A5jRgxEmw=='
+    })
+    driver.add_cookie({
+        'name': 'rbzsessionid',
+        'value': 'b4b3803ad108702fa76f228a156dbcbe'
+    })
+
     url = f"https://data.gov.il/dataset/{resource_id}"
     driver.get(url)
 
@@ -84,3 +85,9 @@ def scrape_data(resource_id):
             cleaned_value = value.replace("\n", "").replace(" ", "").replace("|", " | ")
             print(f"{cleaned_key}: {cleaned_value}")
             break
+
+if __name__ == "__main__":
+    for resource_name, resource_id in RESOURCE_IDS.items():
+        print(f"Scraping data for {resource_name}...")
+        scrape_data(resource_id)
+        print(f"Finished scraping {resource_name}.\n")
