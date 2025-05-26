@@ -14,7 +14,7 @@ RESOURCE_IDS = {
     "train": ("train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd")
     }
 
-def scrape_data(driver, resource_id):
+def scrape_data(driver, resource_id, *args):
 
     url = f"https://data.gov.il/dataset/{resource_id}"
     driver.get(url)
