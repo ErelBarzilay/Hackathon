@@ -1,11 +1,9 @@
-
 import urllib.request
 import urllib.parse
 import pandas as pd
 import json
 import ssl
 import ast
-import psycopg2
 from sqlalchemy import create_engine
 
 ENVELOPE_PATH = r"data/gaza_envelope.txt"
