@@ -3,7 +3,8 @@ import urllib.request
 import urllib.parse
 import pandas as pd
 import json
-
+import os
+os.chdir("data")
 RESOURCE_IDS = {"population": "64edd0ee-3d5d-43ce-8562-c336c24dbc1f", "bus": "86eceab6-44ac-4301-a6a7-9a4a92dae48b", "train": "6cf35ec2-c0eb-4ef0-a904-f093dab0abfd"}
 for key in RESOURCE_IDS:
     url = 'https://data.gov.il/api/3/action/datastore_search?resource_id=' + RESOURCE_IDS[key]  
