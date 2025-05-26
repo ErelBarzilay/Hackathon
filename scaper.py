@@ -77,5 +77,7 @@ for row in table.find("tbody").find_all("tr"):
 # Print the parsed key-value pairs
 for key, value in data_dict.items():
     if "update frequency" in key.lower():
-        print(f"{key.replace("\n", "").replace(" ", "").replace("|", " | ")}: {value.replace("\n", "").replace(" ", "").replace("|", " | ")}")
+        clean_key = key.replace('\n', '').replace('  ', '').replace('|', ' | ')
+        clean_value = value.replace('\n', '').replace('  ', '').replace('|', ' | ')
+        print(f"{clean_key}: {clean_value}")
         break
