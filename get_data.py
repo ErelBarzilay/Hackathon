@@ -4,11 +4,13 @@ import pandas as pd
 import json
 import ssl
 import ast
+from scraper import open_driver, set_cookies, quit_driver, scrape_data
 from sqlalchemy import create_engine
 
 ENVELOPE_PATH = r"data/gaza_envelope.txt"
 BUS_PATH = r"data/bus_envelope.txt"
 TRAIN_PATH = r"."
+
 def pop_func(db, gaza_envelope, *args):
     file = open(gaza_envelope, "r", encoding = "utf-8")
     envelope_string = file.read()
@@ -31,6 +33,8 @@ def train_func(db, _,*args):
     return grouped_df
 
 def main():
+    driver = open_driver()
+    driver = set_cookies(driver)
     context = ssl._create_unverified_context()
     RESOURCE_IDS = {
         "population": ("64edd0ee-3d5d-43ce-8562-c336c24dbc1f", pop_func, ENVELOPE_PATH), 
@@ -53,9 +57,13 @@ def main():
         json_val = json.loads(fileobj.read().decode('utf-8'))["result"]["records"]
         df = pd.DataFrame(json_val)
         df = RESOURCE_IDS[key][1](df, RESOURCE_IDS[key][2])
+
+        df["last_update"] = scrape_data(driver, key)
         df.to_csv("data/" + key + "_data.csv", index=False, encoding="utf-8-sig")
         engine = create_engine('postgresql+psycopg2://postgres:Aa123456@10.0.70.12:5432/homecoming')
         df.to_sql(key + '_data', engine, if_exists='replace', index=False)
+
+    quit_driver(driver)
         
 if __name__ == "__main__":
     main()
