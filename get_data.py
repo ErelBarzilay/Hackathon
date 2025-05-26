@@ -5,6 +5,8 @@ import pandas as pd
 import json
 import ssl
 import ast
+import psycopg2
+from sqlalchemy import create_engine
 
 ENVELOPE_PATH = r"data/gaza_envelope.txt"
 BUS_PATH = r"data/bus_envelope.txt"
@@ -25,7 +27,7 @@ def bus_func(db, envelope, *args):
     db = db[db["cluster_nm"].isin(hebrew_list)]
     return db
 
-def train_func(db, gaza_envelope ,*args):
+def train_func(db, _,*args):
     return db
 
 def main():
@@ -48,6 +50,8 @@ def main():
         df = pd.DataFrame(json_val)
         df = RESOURCE_IDS[key][1](df, RESOURCE_IDS[key][2])
         df.to_csv("data/" + key + "_data.csv", index=False, encoding="utf-8-sig")
+        engine = create_engine('postgresql+psycopg2://postgres:Aa123456@10.0.70.12:5432/homecoming')
+        df.to_sql(key + '_data', engine, if_exists='replace', index=False)
         
 if __name__ == "__main__":
     main()
