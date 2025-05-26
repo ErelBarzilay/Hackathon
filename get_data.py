@@ -25,10 +25,12 @@ def bus_func(db, envelope, *args):
     envelope_string = file.read()
     hebrew_list = ast.literal_eval(envelope_string)
     db = db[db["cluster_nm"].isin(hebrew_list)]
-    return db
+    grouped_df = db.groupby(['ClusterId', 'cluster_nm', 'trip_year', 'trip_month'], as_index=False)[['hakdama', 'eibizua', 'eihurim', 'takin']].sum()
+    return grouped_df
 
 def train_func(db, _,*args):
-    return db
+    grouped_df = db.groupby(['first_train_station_nm', 'last_train_station_nm', 'shana', 'hodesh'], as_index = False)[['rishui_all', 'rishui_only', 'bitzua_only']].sum()
+    return grouped_df
 
 def main():
     context = ssl._create_unverified_context()
