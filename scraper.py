@@ -1,4 +1,3 @@
-import os
 import platform
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -12,7 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 RESOURCE_IDS = {
     "population": ("residents_in_israel_by_communities_and_age_groups/resource/64edd0ee-3d5d-43ce-8562-c336c24dbc1f"), 
     "bus": ("bus_rishui_bitzua_2021/resource/86eceab6-44ac-4301-a6a7-9a4a92dae48b"), 
-    "train": ("train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd")}
+    "train": ("train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd")
+    }
 
 def scrape_data(driver, resource_id):
 

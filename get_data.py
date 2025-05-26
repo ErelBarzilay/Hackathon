@@ -34,7 +34,11 @@ def train_func(db, _,*args):
 
 def main():
     context = ssl._create_unverified_context()
-    RESOURCE_IDS = {"population": ("64edd0ee-3d5d-43ce-8562-c336c24dbc1f", pop_func, ENVELOPE_PATH), "bus": ("86eceab6-44ac-4301-a6a7-9a4a92dae48b", bus_func, BUS_PATH), "train": ("6cf35ec2-c0eb-4ef0-a904-f093dab0abfd&q=שדרות", train_func, TRAIN_PATH)}
+    RESOURCE_IDS = {
+        "population": ("64edd0ee-3d5d-43ce-8562-c336c24dbc1f", pop_func, ENVELOPE_PATH), 
+        "bus": ("86eceab6-44ac-4301-a6a7-9a4a92dae48b", bus_func, BUS_PATH), 
+        "train": ("6cf35ec2-c0eb-4ef0-a904-f093dab0abfd&q=שדרות", train_func, TRAIN_PATH)
+        }
     for key in RESOURCE_IDS:
         url = 'https://data.gov.il/api/3/action/datastore_search?resource_id=' + RESOURCE_IDS[key][0]
         parsed_url = urllib.parse.urlsplit(url)
