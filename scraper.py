@@ -1,4 +1,5 @@
 import platform
+from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -9,12 +10,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 # URL of the webpage to scrape
 RESOURCE_IDS = {
-    "population": ("residents_in_israel_by_communities_and_age_groups/resource/64edd0ee-3d5d-43ce-8562-c336c24dbc1f"), 
-    "bus": ("bus_rishui_bitzua_2021/resource/86eceab6-44ac-4301-a6a7-9a4a92dae48b"), 
-    "train": ("train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd")
+    "population": "residents_in_israel_by_communities_and_age_groups/resource/64edd0ee-3d5d-43ce-8562-c336c24dbc1f", 
+    "bus": "bus_rishui_bitzua_2021/resource/86eceab6-44ac-4301-a6a7-9a4a92dae48b", 
+    "train": "train_trip/resource/6cf35ec2-c0eb-4ef0-a904-f093dab0abfd"
     }
 
-def scrape_data(driver, resource_id, *args):
+def get_last_update(driver, resource_id, *args):
 
     url = f"https://data.gov.il/dataset/{resource_id}"
     driver.get(url)
@@ -48,19 +49,26 @@ def scrape_data(driver, resource_id, *args):
         
         if key_tag and value_tag:
             key = key_tag.get_text(separator=" ", strip=True)
-            value = value_tag.get_text(separator=" ", strip=True)
+            
+            # Get all <p> tags in the <td>
+            p_tags = value_tag.find_all("p")
+            
+            # Start from the second <p> element (index 1)
+            value = " ".join(p.get_text(strip=True) for p in p_tags[1:])
+            
             data_dict[key] = value
 
     # Print the parsed key-value pairs
     for key, value in data_dict.items():
-        if "update frequency" in key.lower():
-            cleaned_key = key.replace("\n", "").replace(" ", "").replace("|", " | ")
-            cleaned_value = value.replace("\n", "").replace(" ", "").replace("|", " | ")
-            print(f"{cleaned_key}: {cleaned_value}")
-            break
+        if "last updated" in key.lower():
+            cleaned_value = value.replace("\n", "").replace("|", "").replace("  ", "").strip()
+            try:
+                return datetime.strptime(cleaned_value, "%d %b %Y %H:%M")
+            except Exception as e:
+                print(f"Error parsing {cleaned_value} with {e}")
+                return cleaned_value
 
-if __name__ == "__main__":
-
+def open_driver():
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")  # Helpful for Windows headless
@@ -83,9 +91,10 @@ if __name__ == "__main__":
         # On Windows, just assume Chrome and ChromeDriver are in PATH
         service = Service()  # Will use default system PATH
 
-    # Initialize the WebDriver
-    driver = webdriver.Chrome(service=service, options=options)
+    return webdriver.Chrome(service=service, options=options)
 
+def set_cookies(driver):
+    # Set cookies to access the site
     driver.get("https://data.gov.il")  # Visit domain to allow setting cookies
     driver.add_cookie({
         'name': 'ckan',
@@ -99,10 +108,30 @@ if __name__ == "__main__":
         'name': 'rbzsessionid',
         'value': 'b4b3803ad108702fa76f228a156dbcbe'
     })
+    return driver
 
-    for resource_name, resource_id in RESOURCE_IDS.items():
-        print(f"Scraping data for {resource_name}...")
-        scrape_data(driver, resource_id)
-        print(f"Finished scraping {resource_name}.\n")
+def quit_driver(driver):
+    if driver:
+        driver.quit()
 
-    driver.quit()  # Close the WebDriver after scraping
+def scrape_data(driver, resource_name):
+    print(f"Scraping data for resource: {resource_name}")
+    resource_id = RESOURCE_IDS.get(resource_name)
+    print(f"Resource ID: {resource_id}")
+    if not resource_id:
+        print(f"Resource ID for {resource_name} not found.")
+        return
+    return get_last_update(driver, resource_id)
+
+
+# def main():
+#     driver = open_driver()
+#     driver = set_cookies(driver)
+
+#     for resource_name in RESOURCE_IDS:
+#         scrape_data(driver, resource_name)
+
+#     quit_driver(driver)
+
+# if __name__ == "__main__":
+#     main()
