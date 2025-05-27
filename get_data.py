@@ -9,7 +9,6 @@ def main():
     # Start threads
     gov_thread.start()
     btl_thread.start()
-
     # Wait for both threads to finish
     gov_thread.join()
     btl_thread.join()
