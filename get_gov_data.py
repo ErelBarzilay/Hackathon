@@ -18,6 +18,8 @@ def pop_func(db, gaza_envelope, *args):
     for i in range(len(hebrew_list)):
         hebrew_list[i] += " "
     db = db[db["שם_ישוב"].isin(hebrew_list)]
+    db["0_18"] = db["גיל_6_18"] + db["גיל_0_5"]
+    db["19_64"] = db["גיל_19_45"] + db["גיל_46_55"] + db["גיל_56_64"]
     return db
     
 def bus_func(db, envelope, *args):
