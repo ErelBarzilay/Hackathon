@@ -30,6 +30,9 @@ RUN apt-get update && apt-get install -y \
     libatspi2.0-0 \
     libdbus-1-3 \
     libexpat1 \
+    libpq-dev \
+    gcc \
+    python3-dev \
     fonts-liberation \
     wget \
     unzip \
@@ -39,12 +42,12 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy your code and requirements
-COPY requirements.txt ./
-COPY . .
-
 # Install Python dependencies
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy your code
+COPY . .
+
 # Run your script
-CMD ["python", "scraper.py"]
+CMD ["python", "get_data.py"]

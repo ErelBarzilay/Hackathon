@@ -65,8 +65,7 @@ def get_last_update(driver, resource_id, *args):
             try:
                 return datetime.strptime(cleaned_value, "%d %b %Y %H:%M")
             except Exception as e:
-                print(f"Error parsing {cleaned_value} with {e}")
-                return cleaned_value
+                raise ValueError(f"Could not parse date: {cleaned_value}")
 
 def open_driver():
     options = Options()
@@ -119,8 +118,7 @@ def scrape_data(driver, resource_name):
     resource_id = RESOURCE_IDS.get(resource_name)
     print(f"Resource ID: {resource_id}")
     if not resource_id:
-        print(f"Resource ID for {resource_name} not found.")
-        return
+        raise ValueError(f"Resource ID for {resource_name} not found.")
     return get_last_update(driver, resource_id)
 
 
