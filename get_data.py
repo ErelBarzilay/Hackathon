@@ -27,8 +27,12 @@ def bus_func(db, envelope, *args):
     return grouped_df
 
 def train_func(db, _,*args):
-    grouped_df = db.groupby(['first_train_station_nm', 'last_train_station_nm', 'shana', 'hodesh'], as_index = False)[['rishui_all', 'rishui_only', 'bitzua_only']].sum()
+    db['year'] = db['shana']
+    db['month'] = db['hodesh']
+    db['upd_date'] = pd.to_datetime(db[['year', 'month']].assign(day=1))
+    grouped_df = db.groupby(['first_train_station_nm', 'last_train_station_nm', 'upd_date'], as_index = False)[['rishui_all', 'rishui_only', 'bitzua_only']].sum()
     return grouped_df
+
 
 def main():
     context = ssl._create_unverified_context()

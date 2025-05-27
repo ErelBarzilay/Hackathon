@@ -23,6 +23,7 @@ if tables:
     envelope_string = file.read()
     hebrew_list = ast.literal_eval(envelope_string)
     df = df[df["ישוב"].isin(hebrew_list)]
+    df["unemployment"] = df["אחוז מקבלים מתושבים"].str.rstrip('%').astype(float) / 100
     df.to_csv(r"data\unemployment_statistics.csv", index=False, encoding="utf-8-sig")
     engine = create_engine('postgresql+psycopg2://postgres:Aa123456@10.0.70.12:5432/homecoming')
     df.to_sql("unemployment_statistics", engine, if_exists='replace', index=False)
