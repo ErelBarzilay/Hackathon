@@ -1,2 +1,4 @@
 .venv
 *example.txt
+__pycache__
+*.pyc

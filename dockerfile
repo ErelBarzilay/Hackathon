@@ -47,4 +47,4 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run your script
-CMD ["python", "scraper.py"]
+CMD ["python", "get_data.py"]
